@@ -18,8 +18,8 @@ func Pack(data []byte, key string) ([]byte, error) {
 	return json.Marshal(packed)
 }
 
-// PackForTestSuite ...
-func PackForTestSuite(data []byte, key string, nonce string) ([]byte, error) {
+// PackForDebug ...
+func PackForDebug(data []byte, key string, nonce string) ([]byte, error) {
 	cipherText, err := aes128gcm_bynonce(data, key, nonce)
 	if err != nil {
 		return nil, err

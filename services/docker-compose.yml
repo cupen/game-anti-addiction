@@ -1,0 +1,13 @@
+// https://docs.nats.io/nats-server/nats_docker
+version: '3.6'
+services:
+  nats:
+    container_name: nats
+    image: nats:2.2.6-alpine
+    restart: unless-stopped
+    ports:
+      - 4222:4222
+      - 8222:8222
+    command: >
+        nats-server
+        -c /etc/nats/nats-server.conf

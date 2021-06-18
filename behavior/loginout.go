@@ -3,6 +3,7 @@ package behavior
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/cupen/game-anti-addiction/auth"
 )
@@ -33,4 +34,32 @@ func (req *LoginOutRequest) Do(c *auth.Client, _url ...string) (*LoginOutRespons
 func (req *LoginOutRequest) DoTestSuite(c *auth.Client, testCode string) (*LoginOutResponse, error) {
 	_url := fmt.Sprintf(url_loginout_test, testCode)
 	return req.Do(c, _url)
+}
+
+func NewLoginEvent(si string, ts time.Time, userType int, deviceId, playerId string) LoginOutEvent {
+	if userType == UserTypes.Guest {
+		playerId = ""
+	}
+	return LoginOutEvent{
+		SessionID:    si,
+		BehaviorType: BehaviorTypes.Online,
+		Timestamp:    ts.UnixNano() / int64(time.Millisecond),
+		UserType:     userType,
+		DeviceID:     deviceId,
+		PlayerID:     playerId,
+	}
+}
+
+func NewLogoutEvent(si string, ts time.Time, userType int, deviceId, playerId string) LoginOutEvent {
+	if userType == UserTypes.Guest {
+		playerId = ""
+	}
+	return LoginOutEvent{
+		SessionID:    si,
+		BehaviorType: BehaviorTypes.Offline,
+		Timestamp:    ts.UnixNano() / int64(time.Millisecond),
+		UserType:     userType,
+		DeviceID:     deviceId,
+		PlayerID:     playerId,
+	}
 }

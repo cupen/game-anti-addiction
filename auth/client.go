@@ -83,7 +83,7 @@ func (c *Client) PostJSON(url string, body interface{}) (*ReqRespContext, error)
 	if c.IsDebug() {
 		if nonce := c.debugArgs.Get("nonce"); nonce != "" {
 			log.Printf("[debug] set nonce = %s", nonce)
-			bodyPacked, err = utils.PackForTestSuite(_body, c.secretKey, nonce)
+			bodyPacked, err = utils.PackForDebug(_body, c.secretKey, nonce)
 		}
 	}
 	if err != nil {
