@@ -1,9 +1,9 @@
-# 国家防沉迷系统测试用例
+# 防沉迷系统测试用例
 8 个测试用例，覆盖三个接口: 实名认证、实名认证结果、玩家在线时长上报
 
 # 使用
 ```bash
-git clone https://github.com/cupen/game-anti-addiction
+git clone https://github.com/cupen/game-anti-addiction --depth 1
 cd _examples/testsuite/
 go run main.go -appId xxx --bizId xxx --secretKey xxx --testCase testcase01 --testCode ABCDEF
 ...
@@ -24,4 +24,4 @@ go run main.go \
 
 # FAQ
 * 连接被拒  
-检查 IP 白名单配置是否正确, 或等几个几秒再重试用例（根据实际体验盲猜的，原因未知）。
+检查 IP 白名单配置是否正确, 或等几秒再重试（根据实际体验盲猜的，原因未知）。
