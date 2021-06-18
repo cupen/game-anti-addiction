@@ -43,7 +43,7 @@ type LoginOutEvent struct {
 	BehaviorType int    `json:"bt"`
 	Timestamp    int64  `json:"ot"`
 	UserType     int    `json:"ct"`
-	GuestID      string `json:"di"`
+	DeviceID     string `json:"di"`
 	PlayerID     string `json:"pi"`
 }
 
