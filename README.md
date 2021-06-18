@@ -4,6 +4,9 @@ Go SDK of china national video game anti-addiction system.
 # Status
 work-in-progress
 
+# License
+MIT License
+
 
 # About video game anti-addiction (Chinese)
 
