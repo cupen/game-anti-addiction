@@ -37,6 +37,14 @@ type LoginOutResponse struct {
 	} `json:"data"`
 }
 
+func (lor *LoginOutResponse) IsOK() bool {
+	return lor.ErrCode == 0
+}
+
+func (lor *LoginOutResponse) CanRetry() bool {
+	return lor.ErrCode == 1005 || lor.ErrCode == 1006
+}
+
 type LoginOutEvent struct {
 	Num          int    `json:"no"`
 	SessionID    string `json:"si"`
