@@ -21,8 +21,11 @@ type RedisStream struct {
 	}
 }
 
-func New(url string) (*RedisStream, error) {
+func New(url string, keySuffix string) (*RedisStream, error) {
 	key := "game-anti-addiction/queue/v1"
+	if keySuffix != "" {
+		key += ":" + keySuffix
+	}
 	maxLen := int64(10240)
 	return NewWithArgs(url, key, maxLen)
 }
@@ -119,7 +122,6 @@ func (r *RedisStream) Read(count int, timeout time.Duration) ([][]byte, error) {
 	}
 	if lastMsgId == "" {
 		lastMsgId = "0-0"
-		r.setLastMsgId(lastMsgId)
 	}
 
 	ctx := context.Background()
@@ -138,7 +140,7 @@ func (r *RedisStream) Read(count int, timeout time.Duration) ([][]byte, error) {
 		return nil, err
 	}
 	if len(streams) != 1 {
-		return nil, fmt.Errorf("must be one stream")
+		return nil, fmt.Errorf("only support one stream")
 	}
 
 	toBytes := func(v interface{}) []byte {

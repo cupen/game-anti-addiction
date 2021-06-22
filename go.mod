@@ -4,8 +4,8 @@ go 1.16
 
 require (
 	github.com/go-redis/redis/v8 v8.10.0
-	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/nats-io/nats-streaming-server v0.22.0 // indirect
-	github.com/nats-io/stan.go v0.9.0
 	github.com/stretchr/testify v1.7.0
+	go.uber.org/ratelimit v0.2.0
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea // indirect
 )

@@ -10,7 +10,7 @@ import (
 
 func TestRedisStream(t *testing.T) {
 	url := "redis://127.0.0.1:6379/0"
-	obj, err := New(url)
+	obj, err := New(url, "test")
 	assert.NoError(t, err)
 	assert.NotNil(t, obj)
 
