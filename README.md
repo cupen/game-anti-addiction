@@ -8,6 +8,66 @@ alpha
 [testcase01~08(Chinese)](https://github.com/cupen/game-anti-addiction/tree/master/_examples/testsuite)
 
 
+# Usages
+* idcard check
+  ```go
+  c := auth.NewClient(appId, bizId, secretKey)
+  req := idcard.CheckRequest{IDNum:"xx", Name:"xx", AI:"xx"}
+  resp, err := req.Do(c)
+  ```
+
+* idcard query 
+  ```go
+  req := idcard.QueryRequest{AI:"xx"}
+  resp, err := req.Do(c)
+  ```
+
+* behavior upload
+  ```go
+  events := []behavior.LoginOutEvent{{}, {}} 
+  req := behavior.LoginOutRequest{Collection: events}
+  resp, err := req.Do(c)
+  ```
+
+* message queue and producer, consumer
+  ```go
+  c := auth.NewClient(appId, bizId, secretKey)
+  queue, err := redisstream.New(redisUrl, "behavior")
+
+  // producer
+  obj := behavior.NewLogin(...) // or NewLogout(...)
+  data, _ := json.Marshal(obj)
+  err = queue.Write(data)
+
+  // consumer
+  c := auth.NewClient(appId, bizId, secretKey)
+  consumerFunc := behavior.ConsumerFunc(c, 128, 100)
+  consumer := consumer.New(queue, consumerFunc)
+  consumer.Start()
+
+  // consumer(manually)
+  msgList, err := queue.Read(1024, 1*time.Second)
+  reqList, err := behavior.DecodeLoginOutRequest(msgList, 128)
+  for _, req := range reqList {
+      resp, err := req.Do(c)
+  }
+  ```
+
+# More Usages
+<details>
+	<summary> out-of-box way </summary>
+
+ * all-in-one
+  ```go
+  c := auth.NewClient(appId, bizId, secretKey)
+  gaa, err := outofbox.New(c, redisUrl)
+  gaa.Start(nil)
+
+  queue := gaa.GetBehaviorQueue()
+  queue.Write(...)
+  ```
+</details>
+
 # License
 MIT License
 

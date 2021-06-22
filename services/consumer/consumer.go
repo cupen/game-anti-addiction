@@ -6,25 +6,29 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/cupen/game-anti-addiction/services"
 	"go.uber.org/ratelimit"
 )
 
-type consumerFunc func([][]byte) error
+type Backend interface {
+	Write([]byte) error
+	Read(int, time.Duration) ([][]byte, error)
+}
+
+type ConsumerFunc func([][]byte) error
 
 type Runner struct {
-	backend     services.Backend
-	consumer    consumerFunc
+	backend     Backend
+	consumer    ConsumerFunc
 	flagRunning int32
 }
 
-func New(backend services.Backend, consumer consumerFunc) *Runner {
-	if backend == nil || consumer == nil {
+func New(backend Backend, cbfunc ConsumerFunc) *Runner {
+	if backend == nil || cbfunc == nil {
 		panic(fmt.Errorf("invalid params: backend or consumer must be non-nil"))
 	}
 	return &Runner{
 		backend:  backend,
-		consumer: consumer,
+		consumer: cbfunc,
 	}
 }
 

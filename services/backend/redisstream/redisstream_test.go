@@ -20,15 +20,23 @@ func TestRedisStream(t *testing.T) {
 		}
 	})
 
+	dataGenerated := func() [1000][]byte {
+		arr := [1000][]byte{}
+		for i := range arr {
+			base := byte(i % 256)
+			arr[i] = []byte{base + 1, base + 2, base + 3, base + 4}
+		}
+		return arr
+	}()
+
 	cases := []int{1, 10, 100, 1000}
 	for _, count := range cases {
 		name := fmt.Sprintf("batch-%d", count)
 		t.Run(name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			msg := []byte{1, 2, 3, 4, 5, 6}
 			for i := 0; i < count; i++ {
-				err := obj.Write(msg)
+				err := obj.Write(dataGenerated[i])
 				assert.NoError(err)
 			}
 
@@ -36,7 +44,7 @@ func TestRedisStream(t *testing.T) {
 			assert.NoError(err)
 			if assert.Equal(count, len(msgList)) {
 				for i := 0; i < count; i++ {
-					assert.Equal(msg, msgList[i])
+					assert.Equal(dataGenerated[i], msgList[i])
 				}
 			}
 

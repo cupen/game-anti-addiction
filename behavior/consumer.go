@@ -8,7 +8,7 @@ import (
 	"go.uber.org/ratelimit"
 )
 
-func decodeLoginoutRequest(msgList [][]byte, batchSize int) ([]*LoginOutRequest, error) {
+func DecodeLoginOutRequest(msgList [][]byte, batchSize int) ([]*LoginOutRequest, error) {
 	var rsList = []*LoginOutRequest{}
 	var events = []LoginOutEvent{}
 	var i = 0
@@ -34,14 +34,14 @@ func decodeLoginoutRequest(msgList [][]byte, batchSize int) ([]*LoginOutRequest,
 	return rsList, lastErr
 }
 
-func Consumer(c *auth.Client, batchSize, rate int) func([][]byte) error {
+func ConsumerFunc(c *auth.Client, batchSize, rate int) func([][]byte) error {
 	limiter := ratelimit.New(rate)
 
 	return func(msgList [][]byte) error {
 		if len(msgList) <= 0 {
 			return nil
 		}
-		reqList, err := decodeLoginoutRequest(msgList, batchSize)
+		reqList, err := DecodeLoginOutRequest(msgList, batchSize)
 		if reqList == nil {
 			return err
 		}

@@ -8,7 +8,7 @@ import (
 	"go.uber.org/ratelimit"
 )
 
-func decodeQueryRequest(msgList [][]byte) ([]*QueryRequest, error) {
+func DecodeQueryRequest(msgList [][]byte) ([]*QueryRequest, error) {
 	var rsList = []*QueryRequest{}
 	var lastErr error = nil
 	for _, msg := range msgList {
@@ -22,13 +22,13 @@ func decodeQueryRequest(msgList [][]byte) ([]*QueryRequest, error) {
 	return rsList, lastErr
 }
 
-func Consumer(c *auth.Client, rate int, callback func(*QueryResponse)) func([][]byte) error {
+func ConsumerFunc(c *auth.Client, rate int, callback func(*QueryResponse)) func([][]byte) error {
 	limiter := ratelimit.New(rate)
 	return func(msgList [][]byte) error {
 		if len(msgList) <= 0 {
 			return nil
 		}
-		reqList, err := decodeQueryRequest(msgList)
+		reqList, err := DecodeQueryRequest(msgList)
 		if reqList == nil {
 			return err
 		}
@@ -44,7 +44,9 @@ func Consumer(c *auth.Client, rate int, callback func(*QueryResponse)) func([][]
 				if err != nil {
 					continue
 				}
-				callback(resp)
+				if callback != nil {
+					callback(resp)
+				}
 				break
 			}
 		}
