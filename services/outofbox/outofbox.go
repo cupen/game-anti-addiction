@@ -38,6 +38,7 @@ func New(c *auth.Client, redisUrl string) (*GameAntiAddiction, error) {
 		queues[name] = backend
 	}
 	return &GameAntiAddiction{
+		client: c,
 		queues: queues,
 	}, nil
 }

@@ -30,7 +30,7 @@ func NewClient(appId, bizId, secretKey string, opts ...Option) *Client {
 		secretKey:  secretKey,
 		httpClient: &http.Client{Timeout: 5 * time.Second},
 	}
-	return c.WithOptions(opts...)
+	return c.ApplyOptions(opts...)
 }
 
 func (c *Client) Clone() *Client {
@@ -41,7 +41,7 @@ func (c *Client) Clone() *Client {
 	return &cloned
 }
 
-func (c *Client) WithOptions(opts ...Option) *Client {
+func (c *Client) ApplyOptions(opts ...Option) *Client {
 	for _, optFunc := range opts {
 		optFunc(c)
 	}

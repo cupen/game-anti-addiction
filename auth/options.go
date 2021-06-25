@@ -12,7 +12,9 @@ func WithHttpClient(httpClient *http.Client) Option {
 	return func(c *Client) {
 		if httpClient == nil {
 			panic(fmt.Errorf("nil http client"))
-			// httpClient = http.DefaultClient
+		}
+		if c == nil {
+			panic(fmt.Errorf("nil *Client"))
 		}
 		c.httpClient = httpClient
 	}
@@ -20,12 +22,18 @@ func WithHttpClient(httpClient *http.Client) Option {
 
 func WithDebug(debug bool) Option {
 	return func(c *Client) {
+		if c == nil {
+			panic(fmt.Errorf("nil *Client"))
+		}
 		c.debug = debug
 	}
 }
 
 func WithDebugArgs(args url.Values) Option {
 	return func(c *Client) {
+		if c == nil {
+			panic(fmt.Errorf("nil *Client"))
+		}
 		c.debugArgs = args
 	}
 }

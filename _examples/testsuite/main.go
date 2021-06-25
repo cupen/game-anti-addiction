@@ -64,7 +64,7 @@ func main() {
 		setupProxy(c, *proxy, *cacert)
 	}
 	if *isDebug {
-		c = c.WithOptions(
+		c.ApplyOptions(
 			auth.WithDebug(true),
 			auth.WithDebugArgs(_debugArgs),
 		)
@@ -208,15 +208,6 @@ func runTestCase07(c *auth.Client, dataDir string) {
 	if resp.ErrCode != 0 {
 		panic(fmt.Errorf("invalid response:%+v", resp))
 	}
-	// if len(resp.Data.Results) != len(cases) {
-	// 	panic(fmt.Errorf("different length between response.Data.Results(%d) and cases(%d)",
-	// 		len(resp.Data.Results), len(cases)))
-	// }
-
-	// for i, _resp := range resp.Data.Results {
-	// 	rs := makeResult(_resp.ErrCode == 0 && _resp.Num > 0 && _resp.ErrMsg == "")
-	// 	log.Printf("testcase07-游戏用户行为数据上报接口:游客模式(%d): %s", i+1, rs)
-	// }
 	rs := makeResult(resp.ErrCode == 0 && len(resp.Data.Results) <= 0)
 	log.Printf("testcase07-游戏用户行为数据上报接口:游客模式: %s", rs)
 }
@@ -307,7 +298,7 @@ func setupProxy(c *auth.Client, proxy string, fpathOfCertCA string) {
 			RootCAs: certPool,
 		},
 	}
-	c.WithOptions(auth.WithHttpClient(&http.Client{
+	c.ApplyOptions(auth.WithHttpClient(&http.Client{
 		Timeout:   10 * time.Second,
 		Transport: &transport,
 	}))
