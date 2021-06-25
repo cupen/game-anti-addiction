@@ -1,6 +1,7 @@
 package outofbox
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"sync"
@@ -25,7 +26,7 @@ type GameAntiAddiction struct {
 	mux       sync.Mutex
 }
 
-type QueryCallback func(resp *idcard.QueryResponse)
+type QueryCallback func(req *idcard.QueryRequest, resp *idcard.QueryResponse)
 
 func New(c *auth.Client, redisUrl string) (*GameAntiAddiction, error) {
 	queues := map[string]backend.Backend{}
@@ -62,6 +63,30 @@ func (gaa *GameAntiAddiction) GetIDCardQueue() backend.Backend {
 }
 func (gaa *GameAntiAddiction) GetClient() *auth.Client {
 	return gaa.client
+}
+
+func (gaa *GameAntiAddiction) PushBehavior(event *behavior.LoginOutEvent) error {
+	if event == nil {
+		return fmt.Errorf("nil arg")
+	}
+	data, err := json.Marshal(event)
+	if err != nil {
+		return err
+	}
+	queue := gaa.GetBehaviorQueue()
+	return queue.Write(data)
+}
+
+func (gaa *GameAntiAddiction) PushQueryRequest(rr *idcard.QueryRequest) error {
+	if rr == nil {
+		return fmt.Errorf("nil arg")
+	}
+	data, err := json.Marshal(rr)
+	if err != nil {
+		return err
+	}
+	queue := gaa.GetIDCardQueue()
+	return queue.Write(data)
 }
 
 func (gaa *GameAntiAddiction) start(cb QueryCallback) error {

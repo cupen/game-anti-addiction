@@ -22,7 +22,7 @@ func DecodeQueryRequest(msgList [][]byte) ([]*QueryRequest, error) {
 	return rsList, lastErr
 }
 
-func ConsumerFunc(c *auth.Client, rate int, callback func(*QueryResponse)) func([][]byte) error {
+func ConsumerFunc(c *auth.Client, rate int, callback func(*QueryRequest, *QueryResponse)) func([][]byte) error {
 	limiter := ratelimit.New(rate)
 	return func(msgList [][]byte) error {
 		if len(msgList) <= 0 {
@@ -45,7 +45,7 @@ func ConsumerFunc(c *auth.Client, rate int, callback func(*QueryResponse)) func(
 					continue
 				}
 				if callback != nil {
-					callback(resp)
+					callback(req, resp)
 				}
 				break
 			}
