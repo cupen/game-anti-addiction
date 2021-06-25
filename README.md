@@ -57,15 +57,14 @@ alpha
 <details>
 	<summary> out-of-box way </summary>
 
- * all-in-one
   ```go
   c := auth.NewClient(appId, bizId, secretKey)
   gaa, err := outofbox.New(c, redisUrl)
   gaa.Start(nil)
-
-  queue := gaa.GetBehaviorQueue()
-  queue.Write(...)
+  gaa.PushBehavior(xxx)
+  gaa.PushQueryRequest(xxx)
   ```
+  
 </details>
 
 # License
