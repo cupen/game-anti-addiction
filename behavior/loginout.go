@@ -43,7 +43,7 @@ func NewLoginEvent(si string, ts time.Time, userType int, deviceId, playerId str
 	return LoginOutEvent{
 		SessionID:    si,
 		BehaviorType: BehaviorTypes.Online,
-		Timestamp:    ts.UnixNano() / int64(time.Millisecond),
+		Timestamp:    ts.UnixNano() / int64(time.Second),
 		UserType:     userType,
 		DeviceID:     deviceId,
 		PlayerID:     playerId,
@@ -57,7 +57,7 @@ func NewLogoutEvent(si string, ts time.Time, userType int, deviceId, playerId st
 	return LoginOutEvent{
 		SessionID:    si,
 		BehaviorType: BehaviorTypes.Offline,
-		Timestamp:    ts.UnixNano() / int64(time.Millisecond),
+		Timestamp:    ts.UnixNano() / int64(time.Second),
 		UserType:     userType,
 		DeviceID:     deviceId,
 		PlayerID:     playerId,

@@ -24,19 +24,18 @@ func DecodeLoginOutRequest(msgList [][]byte, batchSize int) ([]*LoginOutRequest,
 		obj.Num = i
 		events = append(events, obj)
 		if len(events) >= batchSize {
-			req := LoginOutRequest{Collections: events}
-			rsList = append(rsList, &req)
+			rsList = append(rsList, &LoginOutRequest{Collections: events})
+			events = []LoginOutEvent{}
 		}
 	}
-	if len(events) <= 0 {
-		return nil, lastErr
+	if len(events) > 0 {
+		rsList = append(rsList, &LoginOutRequest{Collections: events})
 	}
 	return rsList, lastErr
 }
 
 func ConsumerFunc(c *auth.Client, batchSize, rate int) func([][]byte) error {
 	limiter := ratelimit.New(rate)
-
 	return func(msgList [][]byte) error {
 		if len(msgList) <= 0 {
 			return nil
@@ -45,7 +44,6 @@ func ConsumerFunc(c *auth.Client, batchSize, rate int) func([][]byte) error {
 		if reqList == nil {
 			return err
 		}
-
 		for _, req := range reqList {
 			for i := 0; i < 3; i++ {
 				if i > 0 {
