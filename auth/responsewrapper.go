@@ -30,6 +30,9 @@ func (r *ReqRespContext) Text() string {
 }
 
 func (r *ReqRespContext) Dump() string {
+	if r == nil {
+		return "nil"
+	}
 	headers := ""
 	if r.headers != nil {
 		_data, _ := json.Marshal(r.headers)
