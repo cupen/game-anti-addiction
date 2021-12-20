@@ -1,52 +1,42 @@
 package idcard
 
 import (
-	"strconv"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckBefore(t *testing.T) {
-	assert := assert.New(t)
-
-	idnumbers := "12121212"
-	err := CheckBefore(idnumbers)
-	assert.Error(err)
-
-	idnumbers = "0123456789123456789"
-	err = CheckBefore(idnumbers)
-	assert.Error(err)
-
-	idnumbers = "012345678912345"
-	err = CheckBefore(idnumbers)
-	assert.NoError(err)
-
-	idnumbers = "012345678912345678"
-	err = CheckBefore(idnumbers)
-	assert.NoError(err)
-}
-
 func TestClean(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		assert := assert.New(t)
-		idnumbers := strconv.FormatInt(time.Now().UnixNano(), 10)
-		assert.NotEmpty(idnumbers)
-		filtered, isChanged, err := Clean(idnumbers)
+		for _, idnumbers := range []string{
+			"012345678901234567",
+			"012345678901234",
+			"01234567890123456X",
+			"01234567890123X",
+		} {
+			assert.NotEmpty(idnumbers)
+			filtered, err := Clean(idnumbers)
+			assert.NoError(err)
+			assert.Equal(idnumbers, filtered)
+		}
+	})
+
+	t.Run("clean spaces", func(t *testing.T) {
+		assert := assert.New(t)
+		idnumbers := "012345678901234567"
+		cleaned, err := Clean("012345678901 2345 67")
 		assert.NoError(err)
-		assert.Equal(false, isChanged)
-		assert.Equal(idnumbers, filtered)
+		assert.Equal(idnumbers, cleaned)
 	})
 
 	for _, r := range []rune{'x', 'ｘ', 'Ｘ'} {
 		t.Run("cleaned/"+string(r), func(t *testing.T) {
 			assert := assert.New(t)
-			idnumbers := "0000000010101010" + string(r)
-			filtered, isChanged, err := Clean(idnumbers)
+			idnumbers := "01234567890123456" + string(r)
+			filtered, err := Clean(idnumbers)
 			assert.NoError(err)
-			assert.Equal(true, isChanged)
-			assert.Equal("0000000010101010X", filtered)
+			assert.Equal("01234567890123456X", filtered)
 		})
 	}
 }
