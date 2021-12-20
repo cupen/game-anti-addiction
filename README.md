@@ -64,7 +64,7 @@ alpha
   gaa.PushBehavior(xxx)
   gaa.PushQueryRequest(xxx)
   ```
-  
+
 </details>
 
 # License
