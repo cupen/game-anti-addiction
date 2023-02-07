@@ -1,4 +1,4 @@
-# 防沉迷系统测试套件
+# 防沉迷测试系统-测试套件
 包含官方要求的 8 个测试用例，覆盖三个接口: 实名认证、实名认证结果、玩家在线时长上报
 
 # 使用
@@ -7,7 +7,7 @@ git clone https://github.com/cupen/game-anti-addiction --depth 1
 cd _examples/testsuite/
 go run main.go -appId xxx --bizId xxx --secretKey xxx --testCase testcase01 --testCode ABCDEF
 ...
-# 如果失败，就加个 --debug 参数然后重试并查看日志。
+# 如出错，可加个 --debug 参数重试，然后根据日志调查原因。
 ```
 # 使用（https 代理）
 ```bash
