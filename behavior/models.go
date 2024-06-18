@@ -1,5 +1,7 @@
 package behavior
 
+import "fmt"
+
 var (
 
 	// 行为类型
@@ -43,6 +45,10 @@ func (lor *LoginOutResponse) IsOK() bool {
 
 func (lor *LoginOutResponse) CanRetry() bool {
 	return lor.ErrCode == 1005 || lor.ErrCode == 1006
+}
+
+func (lor *LoginOutResponse) AsError() error {
+	return fmt.Errorf("ErrCode: %d ErrMsg:%s  Data: %v", lor.ErrCode, lor.ErrMsg, lor.Data)
 }
 
 type LoginOutEvent struct {

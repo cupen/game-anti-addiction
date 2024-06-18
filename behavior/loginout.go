@@ -23,7 +23,7 @@ func (req *LoginOutRequest) Do(c *auth.Client, _url ...string) (*LoginOutRespons
 		return nil, err
 	}
 
-	respObj := LoginOutResponse{}
+	respObj := LoginOutResponse{ErrCode: -1}
 	if err := resp.AsJson(&respObj); err != nil {
 		log.Printf("err:%v %s", err, resp.Dump())
 		return nil, err

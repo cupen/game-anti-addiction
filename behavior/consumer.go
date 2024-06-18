@@ -2,6 +2,8 @@ package behavior
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/cupen/game-anti-addiction/auth"
@@ -44,6 +46,7 @@ func ConsumerFunc(c *auth.Client, batchSize, rate int) func([][]byte) error {
 		if reqList == nil {
 			return err
 		}
+		var lastErr error
 		for _, req := range reqList {
 			for i := 0; i < 3; i++ {
 				if i > 0 {
@@ -51,16 +54,25 @@ func ConsumerFunc(c *auth.Client, batchSize, rate int) func([][]byte) error {
 				}
 				_ = limiter.Take()
 				resp, err := req.Do(c)
-				if err != nil {
+				if resp == nil {
+					lastErr = fmt.Errorf("nil response: %v", err)
+					log.Printf("[GAA] push LoginOutEvent failed: %v", lastErr)
 					continue
 				}
-
-				if resp.ErrCode != 0 && resp.CanRetry() {
+				lastErr = err
+				if resp.CanRetry() {
+					log.Printf("[GAA] push LoginOutEvent retrying")
 					continue
+				}
+				if !resp.IsOK() {
+					lastErr = resp.AsError()
+					log.Printf("[GAA] push LoginOutEvent failed: %v", lastErr)
+				} else {
+					lastErr = nil
 				}
 				break
 			}
 		}
-		return nil
+		return lastErr
 	}
 }
